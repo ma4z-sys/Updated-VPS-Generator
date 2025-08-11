@@ -8,7 +8,7 @@ const TOKEN = "YOUR_TOKEN";
 const SERVER_LIMIT = 5;
 const AUTHORIZED_ROLE_IDS = ["000000000000000000", "000000000000000000"];
 const databaseFile = path.join(__dirname, 'servers.txt');
-const image = "ghcr.io/ma4z-spec/hydren-vm:latest";
+const image = "ghcr.io/ma4z-sys/vps_gen_v4:latest";
 
 // Create bot client
 const bot = new Client({
