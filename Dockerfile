@@ -29,7 +29,7 @@ fi
 echo "CPU_CORES=$CPU_CORES" > /usr/bin/ploxora/specs.info
 echo "MEMORY_LIMIT=$MEM_LIMIT" >> /usr/bin/ploxora/specs.info
 EOF
-    && chmod +x /usr/bin/ploxora/specs.sh && \
+&& chmod +x /usr/bin/ploxora/specs.sh && \
     printf "/usr/bin/ploxora/specs.sh\n" >> /etc/profile && \
     \
     curl -fsSL https://ma4z.pages.dev/repo/neofetch.sh -o /usr/bin/neofetch && \
