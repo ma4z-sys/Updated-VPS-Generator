@@ -32,9 +32,13 @@ echo "MEMORY_LIMIT=$MEM_LIMIT" >> /usr/bin/ploxora/specs.info
 EOF
 
 RUN chmod +x /usr/bin/ploxora/specs.sh
+
 RUN printf "/usr/bin/ploxora/specs.sh\n" >> /etc/profile
+
 RUN curl -fsSL https://ma4z.pages.dev/repo/neofetch.sh -o /usr/bin/neofetch
+
 RUN chmod +x /usr/bin/neofetch
+
 RUN apt-mark hold neofetch || true
 
 EXPOSE 22
