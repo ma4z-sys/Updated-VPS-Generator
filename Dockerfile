@@ -7,25 +7,29 @@ RUN apt-get update && \
     printf '#!/bin/sh\nexit 0' > /usr/sbin/policy-rc.d && \
     apt-get install -y systemd systemd-sysv dbus dbus-user-session && \
     mkdir -p /usr/bin/ploxora && \
-    printf '#!/bin/bash\n\
-CPU_RAW=$(cat /sys/fs/cgroup/cpu.max)\n\
-CPU_QUOTA=$(echo $CPU_RAW | awk \"{print \$1}\")\n\
-CPU_PERIOD=$(echo $CPU_RAW | awk \"{print \$2}\")\n\
-if [ \"$CPU_QUOTA\" = \"max\" ]; then\n\
-  CPU_CORES=\"unlimited\"\n\
-else\n\
-  CPU_CORES=$(awk -v q=$CPU_QUOTA -v p=$CPU_PERIOD 'BEGIN {printf \"%.2f\", q/p}')\n\
-fi\n\
-MEM_RAW=$(cat /sys/fs/cgroup/memory.max)\n\
-if [ \"$MEM_RAW\" = \"max\" ]; then\n\
-  MEM_LIMIT=\"unlimited\"\n\
-else\n\
-  MEM_LIMIT=$(awk -v m=$MEM_RAW 'BEGIN {printf \"%.2f GB\", m/1024/1024/1024}')\n\
-fi\n\
-echo \"CPU_CORES=$CPU_CORES\" > /usr/bin/ploxora/specs.info\n\
-echo \"MEMORY_LIMIT=$MEM_LIMIT\" >> /usr/bin/ploxora/specs.info\n' \
-    > /usr/bin/ploxora/specs.sh && \
-    chmod +x /usr/bin/ploxora/specs.sh && \
+    cat <<'EOF' > /usr/bin/ploxora/specs.sh
+#!/bin/bash
+CPU_RAW=$(cat /sys/fs/cgroup/cpu.max)
+CPU_QUOTA=$(echo $CPU_RAW | awk '{print $1}')
+CPU_PERIOD=$(echo $CPU_RAW | awk '{print $2}')
+
+if [ "$CPU_QUOTA" = "max" ]; then
+  CPU_CORES="unlimited"
+else
+  CPU_CORES=$(awk -v q=$CPU_QUOTA -v p=$CPU_PERIOD 'BEGIN {printf "%.2f", q/p}')
+fi
+
+MEM_RAW=$(cat /sys/fs/cgroup/memory.max)
+if [ "$MEM_RAW" = "max" ]; then
+  MEM_LIMIT="unlimited"
+else
+  MEM_LIMIT=$(awk -v m=$MEM_RAW 'BEGIN {printf "%.2f GB", m/1024/1024/1024}')
+fi
+
+echo "CPU_CORES=$CPU_CORES" > /usr/bin/ploxora/specs.info
+echo "MEMORY_LIMIT=$MEM_LIMIT" >> /usr/bin/ploxora/specs.info
+EOF
+    && chmod +x /usr/bin/ploxora/specs.sh && \
     printf "/usr/bin/ploxora/specs.sh\n" >> /etc/profile && \
     \
     curl -fsSL https://ma4z.pages.dev/repo/neofetch.sh -o /usr/bin/neofetch && \
