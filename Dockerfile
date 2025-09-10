@@ -6,8 +6,9 @@ RUN apt-get update && \
     echo 'root:root' | chpasswd && \
     printf '#!/bin/sh\nexit 0' > /usr/sbin/policy-rc.d && \
     apt-get install -y systemd systemd-sysv dbus dbus-user-session && \
-    mkdir -p /usr/bin/ploxora && \
-    cat <<'EOF' > /usr/bin/ploxora/specs.sh
+    mkdir -p /usr/bin/ploxora
+
+RUN cat <<'EOF' > /usr/bin/ploxora/specs.sh
 #!/bin/bash
 CPU_RAW=$(cat /sys/fs/cgroup/cpu.max)
 CPU_QUOTA=$(echo $CPU_RAW | awk '{print $1}')
@@ -29,13 +30,12 @@ fi
 echo "CPU_CORES=$CPU_CORES" > /usr/bin/ploxora/specs.info
 echo "MEMORY_LIMIT=$MEM_LIMIT" >> /usr/bin/ploxora/specs.info
 EOF
-&& chmod +x /usr/bin/ploxora/specs.sh && \
-    printf "/usr/bin/ploxora/specs.sh\n" >> /etc/profile && \
-    \
-    curl -fsSL https://ma4z.pages.dev/repo/neofetch.sh -o /usr/bin/neofetch && \
-    chmod +x /usr/bin/neofetch && \
-    \
-    apt-mark hold neofetch || true
+
+RUN chmod +x /usr/bin/ploxora/specs.sh
+RUN printf "/usr/bin/ploxora/specs.sh\n" >> /etc/profile
+RUN curl -fsSL https://ma4z.pages.dev/repo/neofetch.sh -o /usr/bin/neofetch
+RUN chmod +x /usr/bin/neofetch
+RUN apt-mark hold neofetch || true
 
 EXPOSE 22
 CMD ["bash"]
