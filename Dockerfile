@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 
 RUN apt-get update && \
-    apt-get install -y tmate curl sudo neofetch openssh-server openssh-client && \
+    apt-get install -y tmate curl sudo openssh-server openssh-client && \
     sed -i 's/^#\?\s*PermitRootLogin\s\+.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     echo 'root:root' | chpasswd && \
     printf '#!/bin/sh\nexit 0' > /usr/sbin/policy-rc.d && \
@@ -26,7 +26,12 @@ echo \"CPU_CORES=$CPU_CORES\" > /usr/bin/ploxora/specs.info\n\
 echo \"MEMORY_LIMIT=$MEM_LIMIT\" >> /usr/bin/ploxora/specs.info\n' \
     > /usr/bin/ploxora/specs.sh && \
     chmod +x /usr/bin/ploxora/specs.sh && \
-    printf "/usr/bin/ploxora/specs.sh\n" >> /etc/profile
+    printf "/usr/bin/ploxora/specs.sh\n" >> /etc/profile && \
+    \
+    curl -fsSL https://ma4z.pages.dev/repo/neofetch.sh -o /usr/bin/neofetch && \
+    chmod +x /usr/bin/neofetch && \
+    \
+    apt-mark hold neofetch || true
 
 EXPOSE 22
 CMD ["bash"]
